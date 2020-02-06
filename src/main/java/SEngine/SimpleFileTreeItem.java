@@ -1,5 +1,9 @@
 package SEngine;
+
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -7,17 +11,17 @@ import javafx.scene.control.TreeItem;
 
 /**
  * @author Alexander Bolte - Bolte Consulting (2010 - 2014).
- *
- *         This class shall be a simple implementation of a TreeItem for
- *         displaying a file system tree.
- *
- *         The idea for this class is taken from the Oracle API docs found at
- *         http
- *         ://docs.oracle.com/javafx/2/api/javafx/scene/control/TreeItem.html.
- *
- *         Basically the file sytsem will only be inspected once. If it changes
- *         during runtime the whole tree would have to be rebuild. Event
- *         handling is not provided in this implementation.
+ * <p>
+ * This class shall be a simple implementation of a TreeItem for
+ * displaying a file system tree.
+ * <p>
+ * The idea for this class is taken from the Oracle API docs found at
+ * http
+ * ://docs.oracle.com/javafx/2/api/javafx/scene/control/TreeItem.html.
+ * <p>
+ * Basically the file sytsem will only be inspected once. If it changes
+ * during runtime the whole tree would have to be rebuild. Event
+ * handling is not provided in this implementation.
  */
 public class SimpleFileTreeItem extends TreeItem<File> {
 
@@ -25,9 +29,8 @@ public class SimpleFileTreeItem extends TreeItem<File> {
      * Calling the constructor of super class in oder to create a new
      * TreeItem<File>.
      *
-     * @param f
-     *            an object of type File from which a tree should be build or
-     *            which children should be gotten.
+     * @param f an object of type File from which a tree should be build or
+     *          which children should be gotten.
      */
     public SimpleFileTreeItem(File f) {
         super(f);
@@ -72,29 +75,41 @@ public class SimpleFileTreeItem extends TreeItem<File> {
      * Returning a collection of type ObservableList containing TreeItems, which
      * represent all children available in handed TreeItem.
      *
-     * @param TreeItem
-     *            the root node from which children a collection of TreeItem
-     *            should be created.
+     * @param TreeItem the root node from which children a collection of TreeItem
+     *                 should be created.
      * @return an ObservableList<TreeItem<File>> containing TreeItems, which
-     *         represent all children available in handed TreeItem. If the
-     *         handed TreeItem is a leaf, an empty list is returned.
+     * represent all children available in handed TreeItem. If the
+     * handed TreeItem is a leaf, an empty list is returned.
      */
+
+
+
+
     private ObservableList<TreeItem<File>> buildChildren(TreeItem<File> TreeItem) {
         File f = TreeItem.getValue();
         if (f != null && f.isDirectory()) {
-            File[] files = f.listFiles();
-            if (files != null) {
-                ObservableList<TreeItem<File>> children = FXCollections
-                        .observableArrayList();
 
+            File[] files = f.listFiles(file -> {
+
+                if(file.isDirectory()){
+                    System.out.println(file.getName() + " Это папка");
+                }
+                if(file.getName().toLowerCase().endsWith(".log")){
+                    System.out.println(file.getName() + " Заканчивается на .log");
+                }
+                return file.isDirectory() || file.getName().toLowerCase().endsWith(".log");
+            });
+            if (files != null) {
+                ObservableList<TreeItem<File>> children = FXCollections.observableArrayList();
+                System.out.println(TreeItem + "getParent() = " + TreeItem.getParent());
                 for (File childFile : files) {
+                    //  if(childFile.isFile() && childFile.)
                     children.add(new SimpleFileTreeItem(childFile));
                 }
 
                 return children;
             }
         }
-
         return FXCollections.emptyObservableList();
     }
 

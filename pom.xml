@@ -9,7 +9,6 @@
 
     <build>
         <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
-
         <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
         <resources>
             <resource>
@@ -21,7 +20,28 @@
                 <directory>${project.basedir}/src/test/resources</directory>
             </testResource>
         </testResources>
-
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
+    <dependencies>
+        <dependency>
+            <groupId>com.googlecode.grep4j</groupId>
+            <artifactId>grep4j</artifactId>
+            <version>1.8.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.unix4j</groupId>
+            <artifactId>unix4j-command</artifactId>
+            <version>0.4</version>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.HTMLEditor?>
 
@@ -16,18 +19,10 @@
    <children>
       <BorderPane id="root" prefHeight="562.0" prefWidth="847.0">
          <center>
-            <SplitPane id="splitView" dividerPositions="0.4816053511705686" prefHeight="534.0" prefWidth="847.0" BorderPane.alignment="CENTER">
+            <SplitPane id="splitView" dividerPositions="0.3" prefHeight="534.0" prefWidth="847.0" BorderPane.alignment="CENTER">
               <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="535.0" prefWidth="488.0">
-                     <children>
-                        <TreeView id="fileView" layoutY="74.0" prefHeight="263.0" prefWidth="285.0" />
-                     </children>
-                  </AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                     <children>
-                        <HTMLEditor htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" prefHeight="337.0" prefWidth="307.0" />
-                     </children>
-                  </AnchorPane>
+                  <TreeView id="fileView" prefHeight="501.0" prefWidth="255.0" />
+                  <HTMLEditor htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" prefHeight="500.0" prefWidth="426.0" />
               </items>
             </SplitPane>
          </center>
@@ -54,9 +49,18 @@
                         </Menu>
                     </menus>
                   </MenuBar>
-                  <ToolBar id="tools" prefHeight="40.0" prefWidth="600.0">
+                  <ToolBar id="tools" prefHeight="169.0" prefWidth="847.0">
                     <items>
-                      <Button id="btn" mnemonicParsing="false" text="Button" />
+                        <TextField id="name" alignment="CENTER" prefHeight="25.0" prefWidth="197.0" />
+                        <Pane prefHeight="25.0" prefWidth="633.0">
+                           <children>
+                            <Button id="btnFind" alignment="CENTER" contentDisplay="CENTER" layoutX="93.0" mnemonicParsing="false" text="Поиск" textAlignment="CENTER">
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                              </Button>
+                           </children>
+                        </Pane>
                     </items>
                   </ToolBar>
                </children>
