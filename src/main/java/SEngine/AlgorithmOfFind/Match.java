@@ -5,8 +5,8 @@ public class Match {
         return numRow;
     }
 
-    public void setNum_row(int num_row) {
-        this.numRow = num_row;
+    public void setNum_row(int numRow) {
+        this.numRow = numRow;
     }
 
     StringBuilder getRow() {

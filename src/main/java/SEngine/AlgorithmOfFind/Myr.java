@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 
-class Myr {
+public class Myr {
 
     public static void main(String[] args) throws IOException {
         String grepfor = "SEX";
@@ -20,7 +20,7 @@ class Myr {
 
     private static final int MAPSIZE = 4 * 1024; // 4K - make this * 1024 to 4MB in a real system.
 
-    private static ReportFind searchFor(String grepfor, Path path) throws IOException {
+    public static ReportFind searchFor(String grepfor, Path path) throws IOException {
 
         ReportFind reportFind = new ReportFind();
 

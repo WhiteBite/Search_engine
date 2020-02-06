@@ -96,6 +96,7 @@ public class SimpleFileTreeItem extends TreeItem<File> {
                 }
                 if(file.getName().toLowerCase().endsWith(".log")){
                     System.out.println(file.getName() + " Заканчивается на .log");
+                   // if()
                 }
                 return file.isDirectory() || file.getName().toLowerCase().endsWith(".log");
             });

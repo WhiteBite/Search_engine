@@ -6,6 +6,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TreeView?>
@@ -21,8 +22,18 @@
          <center>
             <SplitPane id="splitView" dividerPositions="0.3" prefHeight="534.0" prefWidth="847.0" BorderPane.alignment="CENTER">
               <items>
-                  <TreeView id="fileView" prefHeight="501.0" prefWidth="255.0" />
-                  <HTMLEditor htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" prefHeight="500.0" prefWidth="426.0" />
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <TextField id="filter" prefHeight="25.0" prefWidth="113.0" />
+                        <TreeView id="fileView" prefHeight="501.0" prefWidth="383.0" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <HTMLEditor htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" prefHeight="386.0" prefWidth="547.0" />
+                        <TextArea id="reportInfo" prefHeight="200.0" prefWidth="200.0" />
+                     </children>
+                  </VBox>
               </items>
             </SplitPane>
          </center>
@@ -51,14 +62,15 @@
                   </MenuBar>
                   <ToolBar id="tools" prefHeight="169.0" prefWidth="847.0">
                     <items>
-                        <TextField id="name" alignment="CENTER" prefHeight="25.0" prefWidth="197.0" />
                         <Pane prefHeight="25.0" prefWidth="633.0">
                            <children>
-                            <Button id="btnFind" alignment="CENTER" contentDisplay="CENTER" layoutX="93.0" mnemonicParsing="false" text="Поиск" textAlignment="CENTER">
+                            <Button id="btnFind" alignment="CENTER" contentDisplay="CENTER" layoutX="443.0" mnemonicParsing="false" text="Поиск" textAlignment="CENTER">
                                  <opaqueInsets>
                                     <Insets />
                                  </opaqueInsets>
                               </Button>
+                              <Button id="btnDirChooser" mnemonicParsing="false" text="Выбрать папку" />
+                              <TextField id="searchWord" alignment="CENTER" layoutX="240.0" prefHeight="25.0" prefWidth="197.0" />
                            </children>
                         </Pane>
                     </items>
