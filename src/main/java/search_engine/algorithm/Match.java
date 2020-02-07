@@ -1,4 +1,4 @@
-package SEngine.AlgorithmOfFind;
+package search_engine.algorithm;
 
 public class Match {
     int getNum_row() {

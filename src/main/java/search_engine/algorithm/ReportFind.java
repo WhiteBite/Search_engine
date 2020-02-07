@@ -1,4 +1,7 @@
-package SEngine.AlgorithmOfFind;
+package search_engine.algorithm;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,15 +11,20 @@ public class ReportFind {
     private long timeStart;
     private long timeStop;
     private List<Match> matchArr;
-    public  boolean isFound =false;
+    public boolean isFound;
+    @Getter
+    @Setter
+    private String path;
 
     public ReportFind(long timeFind, List<Match> matchArr) {
+        isFound = false;
         this.timeStart = timeFind;
         this.matchArr = matchArr;
         matchArr = new ArrayList<>();
     }
 
-    public ReportFind() {
+    ReportFind() {
+        isFound = false;
         matchArr = new ArrayList<>();
         timeStart = System.currentTimeMillis();
     }
@@ -38,6 +46,7 @@ public class ReportFind {
     }
 
     void addMatch(Match match) {
+        isFound = true;
         matchArr.add(match);
     }
 
@@ -45,7 +54,8 @@ public class ReportFind {
         addMatch(new Match(numRow, row));
     }
 
-    public void Show() {
+    void Show() {
+        System.out.println("Path: " + getPath());
         for (var x : matchArr) {
             System.out.println(x.getNum_row() + "  " + x.getRow());
         }
@@ -54,16 +64,13 @@ public class ReportFind {
 
     public StringBuilder getResult() {
         StringBuilder result = new StringBuilder();
-        if (matchArr.isEmpty())
-            result.append("Not Found");
-        else {
-            isFound =true;
-            result.append("Ok\n");
+        result.append("Path: ").append(getPath());
+        if (!matchArr.isEmpty()) {
             for (var x : matchArr) {
                 result.append(x.getNum_row()).append(" ").append(x.getRow());
             }
+            result.append("Search time:").append(timeStop - timeStart).append("ms");
         }
-        result.append("Search time:").append(timeStop - timeStart);
         return result;
     }
 

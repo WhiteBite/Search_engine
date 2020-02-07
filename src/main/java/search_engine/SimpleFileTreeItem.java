@@ -1,13 +1,10 @@
-package SEngine;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
-import java.util.List;
+package search_engine;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
+
+import java.io.File;
 
 /**
  * @author Alexander Bolte - Bolte Consulting (2010 - 2014).

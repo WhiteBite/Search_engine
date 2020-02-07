@@ -1,54 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.control.TreeView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.web.HTMLEditor?>
-
-<AnchorPane prefHeight="562.0" prefWidth="847.0" xmlns="http://javafx.com/javafx/8.0.231" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SEngine.Controller">
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane prefHeight="562.0" prefWidth="847.0" xmlns="http://javafx.com/javafx/8.0.231" xmlns:fx="http://javafx.com/fxml/1" fx:controller="search_engine.Controller">
    <children>
-      <BorderPane id="root" prefHeight="562.0" prefWidth="847.0">
+      <BorderPane fx:id="root" prefHeight="562.0" prefWidth="847.0">
          <center>
-            <SplitPane id="splitView" dividerPositions="0.3" prefHeight="534.0" prefWidth="847.0" BorderPane.alignment="CENTER">
+            <SplitPane fx:id="splitView" dividerPositions="0.3" prefHeight="534.0" prefWidth="847.0" BorderPane.alignment="CENTER">
               <items>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <TextField id="filter" prefHeight="25.0" prefWidth="113.0" />
-                        <TreeView id="fileView" prefHeight="501.0" prefWidth="383.0" />
+                        <TextField fx:id="filterExt" prefHeight="25.0" prefWidth="113.0" />
+                        <TreeView fx:id="fileView" prefHeight="501.0" prefWidth="383.0" />
                      </children>
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <HTMLEditor htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" prefHeight="386.0" prefWidth="547.0" />
-                        <TextArea id="reportInfo" prefHeight="200.0" prefWidth="200.0" />
+                        <TabPane fx:id="tabPane" prefHeight="507.0" prefWidth="588.0">
+                          <tabs>
+                            <Tab fx:id="tab" text="Tab 1">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TextArea fx:id="TextFile" prefHeight="300.0" prefWidth="588.0" />
+                                          <TextArea fx:id="reportInfo" layoutY="299.0" prefHeight="172.0" prefWidth="588.0" />
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                          </tabs>
+                        </TabPane>
                      </children>
                   </VBox>
               </items>
             </SplitPane>
          </center>
          <top>
-            <VBox id="menus" prefHeight="38.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            <VBox fx:id="menus" prefHeight="38.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                <children>
-                  <MenuBar id="menu" prefHeight="25.0" prefWidth="600.0">
+                  <MenuBar fx:id="menu" prefHeight="25.0" prefWidth="600.0">
                     <menus>
-                      <Menu id="menuFile" mnemonicParsing="false" text="File" />
+                      <Menu fx:id="menuFile" mnemonicParsing="false" text="File" />
                       <Menu mnemonicParsing="false" text="Edit">
                         <items>
                           <MenuItem mnemonicParsing="false" text="Delete" />
                         </items>
                       </Menu>
-                      <Menu id="menuHelp" mnemonicParsing="false" text="Help">
+                      <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
                         <items>
                           <MenuItem mnemonicParsing="false" text="About" />
                         </items>
@@ -60,17 +59,17 @@
                         </Menu>
                     </menus>
                   </MenuBar>
-                  <ToolBar id="tools" prefHeight="169.0" prefWidth="847.0">
+                  <ToolBar fx:id="tools" prefHeight="169.0" prefWidth="847.0">
                     <items>
                         <Pane prefHeight="25.0" prefWidth="633.0">
                            <children>
-                            <Button id="btnFind" alignment="CENTER" contentDisplay="CENTER" layoutX="443.0" mnemonicParsing="false" text="Поиск" textAlignment="CENTER">
+                            <Button fx:id="btnFind" alignment="CENTER" contentDisplay="CENTER" layoutX="443.0" mnemonicParsing="false" text="Поиск" textAlignment="CENTER">
                                  <opaqueInsets>
                                     <Insets />
                                  </opaqueInsets>
                               </Button>
-                              <Button id="btnDirChooser" mnemonicParsing="false" text="Выбрать папку" />
-                              <TextField id="searchWord" alignment="CENTER" layoutX="240.0" prefHeight="25.0" prefWidth="197.0" />
+                              <Button fx:id="btnDirChooser" mnemonicParsing="false" text="Выбрать папку" />
+                              <TextField fx:id="searchWord" alignment="CENTER" layoutX="240.0" prefHeight="25.0" prefWidth="197.0" />
                            </children>
                         </Pane>
                     </items>

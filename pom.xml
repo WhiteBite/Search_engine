@@ -47,6 +47,12 @@
             <artifactId>unix4j-command</artifactId>
             <version>0.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.fxmisc.richtext</groupId>
+            <artifactId>richtextfx</artifactId>
+            <version>0.10.3</version>
+        </dependency>
     </dependencies>
+
 
 </project>

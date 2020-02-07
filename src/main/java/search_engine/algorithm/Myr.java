@@ -1,4 +1,4 @@
-package SEngine.AlgorithmOfFind;
+package search_engine.algorithm;
 
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
@@ -20,65 +20,73 @@ public class Myr {
 
     private static final int MAPSIZE = 4 * 1024; // 4K - make this * 1024 to 4MB in a real system.
 
-    public static ReportFind searchFor(String grepfor, Path path) throws IOException {
-
+    public static ReportFind searchFor(String grepFor, Path path) throws IOException {
         ReportFind reportFind = new ReportFind();
+        if (grepFor.isEmpty()) {
+            reportFind.isFound = true;
+            return reportFind;
+        }
 
-        long time = System.currentTimeMillis();
-        final byte[] tosearch = grepfor.getBytes(StandardCharsets.UTF_8);
+        //ReportFind reportFind = new ReportFind();
+        reportFind.setPath(path.toString());
+        final byte[] toSearch = grepFor.getBytes(StandardCharsets.UTF_8);
         int padding = 1; // need to scan 1 character ahead in case it is a word boundary.
-        int linecount = 0;
-        boolean inword = false;
-        boolean scantolineend = false;
+        int lineCount = 0; 
+        boolean inWord = false; 
+        boolean scanToLineEnd = false; 
         try (FileChannel channel = FileChannel.open(path, StandardOpenOption.READ)) {
+
             final long length = channel.size();
             int pos = 0;
             while (pos < length) {
                 long remaining = length - pos;
                 // int conversion is safe because of a safe MAPSIZE.. Assume a reaosnably sized tosearch.
-                int trymap = MAPSIZE + tosearch.length + padding;
-                int tomap = (int) Math.min(trymap, remaining);
+                int tryMap = MAPSIZE + toSearch.length + padding;
+                int toMap = (int) Math.min(tryMap, remaining);
                 // different limits depending on whether we are the last mapped segment.
-                int limit = trymap == tomap ? MAPSIZE : (tomap - tosearch.length);
-                MappedByteBuffer buffer = channel.map(MapMode.READ_ONLY, pos, tomap);
-                System.out.println("Mapped from " + pos + " for " + tomap);
-                pos += (trymap == tomap) ? MAPSIZE : tomap;
+                int limit = tryMap == toMap ? MAPSIZE : (toMap - toSearch.length);
+                MappedByteBuffer buffer = channel.map(MapMode.READ_ONLY, pos, toMap);
+                System.out.println("Mapped from " + pos + " for " + toMap);
+                pos += (tryMap == toMap) ? MAPSIZE : toMap;
                 for (int i = 0; i < limit; i++) {
                     final byte b = buffer.get(i);
-                    if (scantolineend) {
+                    if (scanToLineEnd) {
                         if (b == '\n') {
-                            scantolineend = false;
-                            inword = false;
-                            linecount++;
+                            scanToLineEnd = false;
+                            inWord = false;
+                            lineCount++;
                         }
                     } else if (b == '\n') {
-                        linecount++;
-                        inword = false;
+                        lineCount++;
+                        inWord = false;
                     } else if (b == '\r' || b == ' ') {
-                        inword = false;
-                    } else if (!inword) {
-                        if (wordMatch(buffer, i, tomap, tosearch)) {
-                            reportFind.addMatch(new Match(linecount, getString(buffer, i)));
-                            scantolineend = true;
+                        inWord = false;
+                    } else if (!inWord) {
+                        if (wordMatch(buffer, i, toMap, toSearch)) {
+                            //add match
+                            reportFind.addMatch(new Match(lineCount, getString(buffer, i)));
+                            scanToLineEnd = true;
                         } else {
-                            inword = true;
+                            inWord = true;
                         }
                     }
                 }
             }
         }
         reportFind.StopTime();
+        reportFind.Show();
+        HistorySearch.history.put(path,reportFind);
         return reportFind;
     }
 
-    private static boolean wordMatch(MappedByteBuffer buffer, int pos, int tomap, byte[] tosearch) {
+    private static boolean wordMatch(MappedByteBuffer buffer, int pos, int toMap, byte[] toSearch) {
         //assume at valid word start.
-        for (int i = 0; i < tosearch.length; i++) {
-            if (tosearch[i] != buffer.get(pos + i)) {
+        for (int i = 0; i < toSearch.length; i++) {
+            if (toSearch[i] != buffer.get(pos + i)) {
                 return false;
             }
         }
-        byte nxt = (pos + tosearch.length) == tomap ? (byte) ' ' : buffer.get(pos + tosearch.length);
+        byte nxt = (pos + toSearch.length) == toMap ? (byte) ' ' : buffer.get(pos + toSearch.length);
         return nxt == ' ' || nxt == '\n' || nxt == '\r';
     }
 
