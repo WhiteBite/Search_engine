@@ -16,8 +16,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
-//import javafx.scene.control.*;
-
 public class Controller {
     private HashMap<TreeItem<File>, Tab> openTabs = new HashMap<>();
     @FXML

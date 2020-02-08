@@ -37,7 +37,7 @@ public class ReportFind {
     }
 
 
-    void Show() {
+    void show() {
         System.out.println("Path: " + path);
         for (var x : matchArr) {
             System.out.println(x.getNumRow() + "  " + x.getRow());
@@ -57,7 +57,7 @@ public class ReportFind {
         return result;
     }
 
-    void StopTime() {
+    void stopTime() {
         timeStop = System.currentTimeMillis();
     }
 }

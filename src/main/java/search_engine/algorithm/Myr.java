@@ -78,8 +78,8 @@ public class Myr {
                 }
             }
         }
-        reportFind.StopTime();
-        reportFind.Show();
+        reportFind.stopTime();
+        reportFind.show();
         HistorySearch.history.put(path, reportFind);
         return reportFind;
     }
