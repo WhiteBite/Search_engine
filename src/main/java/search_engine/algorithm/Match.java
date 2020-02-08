@@ -1,22 +1,11 @@
 package search_engine.algorithm;
 
-public class Match {
-    int getNum_row() {
-        return numRow;
-    }
+import lombok.Getter;
+import lombok.Setter;
 
-    public void setNum_row(int numRow) {
-        this.numRow = numRow;
-    }
-
-    StringBuilder getRow() {
-        return row;
-    }
-
-    public void setRow(StringBuilder row) {
-        this.row = row;
-    }
-
+@Getter
+@Setter
+class Match {
     private int numRow;
     private StringBuilder row;
 

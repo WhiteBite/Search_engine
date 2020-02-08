@@ -47,12 +47,6 @@ class FileSystemTree {
         }));
     }
 
-    /**
-     * Iterate through the directory structure and create a file tree
-     *
-     * @param rootItem
-     * @throws IOException
-     */
     public static void createTree(TreeItem<File> rootItem) throws IOException {
 
 
@@ -76,13 +70,6 @@ class FileSystemTree {
         }
     }
 
-    /**
-     * Create new filtered tree structure
-     *
-     * @param root
-     * @param filter
-     * @param filteredRoot
-     */
     private void filter(TreeItem<File> root, String filter, TreeItem<File> filteredRoot, String searchString) throws IOException {
 
         for (TreeItem<File> child : root.getChildren()) {
@@ -94,23 +81,13 @@ class FileSystemTree {
             }
             //TODO reformat
             if (isMatch(filteredChild.getValue(), filter)) {
-                if (Myr.searchFor(searchString, Paths.get(filteredChild.getValue().getPath())).isFound)
+                if (Myr.searchFor(searchString, Paths.get(filteredChild.getValue().getPath())).isFound())
                     filteredRoot.getChildren().add(filteredChild);
-//                if (searchString.equals("")) {
-//                    filteredRoot.getChildren().add(filteredChild);
 //                }
             }
         }
     }
 
-
-    /**
-     * Comparator for tree filter
-     *
-     * @param value
-     * @param filter
-     * @return
-     */
     private boolean isMatch(File value, String filter) {
         //    return value.toString().toLowerCase().endsWith(filter.toLowerCase()); // TODO: optimize or change (check file extension, etc)
         if (value.toString().toLowerCase().endsWith(filter.toLowerCase()))
@@ -131,13 +108,7 @@ class FileSystemTree {
         return treeView.getRoot();
     }
 
-    /**
-     * Create root node. Used for the original tree and the filtered tree.
-     * Another option would be to clone the root.
-     *
-     * @return
-     */
-    public TreeItem<File> createTreeRoot() {
+    private TreeItem<File> createTreeRoot() {
         TreeItem<File> root = new TreeItem<>(new File(rootFolder));
         root.setExpanded(true);
         return root;

@@ -1,43 +1,37 @@
 package search_engine.algorithm;
 
+import search_engine.Config;
+
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 
 public class Myr {
-
-    public static void main(String[] args) throws IOException {
-        String grepfor = "SEX";
-        Path path = Paths.get("C:\\test_papka\\1\\2\\log - Copy.log");
-        searchFor(grepfor, path).Show();
-    }
 
     private static final int MAPSIZE = 4 * 1024; // 4K - make this * 1024 to 4MB in a real system.
 
     public static ReportFind searchFor(String grepFor, Path path) throws IOException {
         ReportFind reportFind = new ReportFind();
         if (grepFor.isEmpty()) {
-            reportFind.isFound = true;
+            reportFind.setFound(true);
             return reportFind;
         }
-
         //ReportFind reportFind = new ReportFind();
         reportFind.setPath(path.toString());
         final byte[] toSearch = grepFor.getBytes(StandardCharsets.UTF_8);
         int padding = 1; // need to scan 1 character ahead in case it is a word boundary.
-        int lineCount = 0; 
-        boolean inWord = false; 
-        boolean scanToLineEnd = false; 
+        int lineCount = 0;
+        boolean inWord = false;
+        boolean scanToLineEnd = false;
         try (FileChannel channel = FileChannel.open(path, StandardOpenOption.READ)) {
-
             final long length = channel.size();
             int pos = 0;
+            int posL = 0;
             while (pos < length) {
                 long remaining = length - pos;
                 // int conversion is safe because of a safe MAPSIZE.. Assume a reaosnably sized tosearch.
@@ -47,6 +41,7 @@ public class Myr {
                 int limit = tryMap == toMap ? MAPSIZE : (toMap - toSearch.length);
                 MappedByteBuffer buffer = channel.map(MapMode.READ_ONLY, pos, toMap);
                 System.out.println("Mapped from " + pos + " for " + toMap);
+
                 pos += (tryMap == toMap) ? MAPSIZE : toMap;
                 for (int i = 0; i < limit; i++) {
                     final byte b = buffer.get(i);
@@ -55,19 +50,26 @@ public class Myr {
                             scanToLineEnd = false;
                             inWord = false;
                             lineCount++;
+                            posL = i;
                         }
                     } else if (b == '\n') {
                         lineCount++;
+                        posL = i;
                         inWord = false;
                     } else if (b == '\r' || b == ' ') {
                         inWord = false;
-                    } else if (!inWord) {
-                        if (wordMatch(buffer, i, toMap, toSearch)) {
-                            //add match
-                            reportFind.addMatch(new Match(lineCount, getString(buffer, i)));
-                            scanToLineEnd = true;
-                        } else {
-                            inWord = true;
+                    } else {
+                        if (!Config.isInWorld())
+                            inWord = false;
+                        if (!inWord) {
+                            if (wordMatch(buffer, i, toMap, toSearch)) {
+                                //add match
+
+                                reportFind.addMatch(new Match(lineCount + 1, getString(buffer, posL+1)));
+                                scanToLineEnd = true;
+                            } else {
+                                inWord = true;
+                            }
                         }
                     }
                 }
@@ -75,7 +77,7 @@ public class Myr {
         }
         reportFind.StopTime();
         reportFind.Show();
-        HistorySearch.history.put(path,reportFind);
+        HistorySearch.history.put(path, reportFind);
         return reportFind;
     }
 
@@ -86,17 +88,26 @@ public class Myr {
                 return false;
             }
         }
-        byte nxt = (pos + toSearch.length) == toMap ? (byte) ' ' : buffer.get(pos + toSearch.length);
-        return nxt == ' ' || nxt == '\n' || nxt == '\r';
+
+        if (Config.isInWorld()) {
+            byte nxt = (pos + toSearch.length) == toMap ? (byte) ' ' : buffer.get(pos + toSearch.length);
+            return nxt == ' ' || nxt == '\n' || nxt == '\r';
+        }
+        return true;
     }
 
     private static StringBuilder getString(MappedByteBuffer buffer, int pos) {
         //assume at valid word start.
+
         char tmp = ' ';
         StringBuilder row = new StringBuilder();
-        for (int i = 0; tmp != '\n'; i++) {
-            tmp = (char) buffer.get(pos + i);
-            row.append(tmp);
+        try {
+            for (int i = 0; tmp != '\n' && pos + i <= MAPSIZE && pos + i < buffer.capacity(); i++) {
+                tmp = (char) buffer.get(pos + i);
+                row.append(tmp);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return row;
     }
