@@ -2,7 +2,6 @@ package search_engine;
 
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import lombok.Getter;
 import lombok.Setter;
 import search_engine.algorithm.Myr;
 
@@ -15,7 +14,6 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 
 class FileSystemTree {
-    @Getter
     @Setter
     String rootFolder = ""; // TODO: change or make selectable
     private TreeView<File> treeView;
@@ -32,7 +30,7 @@ class FileSystemTree {
         createTree();
     }
 
-    void createTree() throws IOException {
+    void createTree() {
         // create tree structure recursively
         rootTreeItem = createTreeRoot();
         treeView.setRoot(rootTreeItem);
@@ -75,7 +73,9 @@ class FileSystemTree {
             }
             //TODO reformat
             if (isMatch(filteredChild.getValue(), filter)) {
-                if (Myr.run(searchString, Paths.get(filteredChild.getValue().getPath())).isFound())
+
+                var path = Paths.get(filteredChild.getValue().getPath());
+                if (Myr.searchFor(searchString, path).isFound())
                     filteredRoot.getChildren().add(filteredChild);
             }
         }

@@ -11,6 +11,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
@@ -99,12 +100,8 @@ public class Controller {
             if (dir != null) {
                 Config.setRoot(true);
                 treeView.setRootFolder(dir.getAbsolutePath());
-                try {
-                    treeView.createTree();
-                    filterExt.setText(".log");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                treeView.createTree();
+                filterExt.setText(".log");
                 System.out.println("dir.getAbsolutePath() = " + dir.getAbsolutePath());
             }
         });

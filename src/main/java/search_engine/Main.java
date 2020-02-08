@@ -21,8 +21,6 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/fxml/main.fxml"));
         AnchorPane anchorPane = loader.load();
-        Controller controller = loader.getController();
-       // controller.setMain(this);
         Scene scene = new Scene(anchorPane);
         primaryStage.setScene(scene);
         primaryStage.show();

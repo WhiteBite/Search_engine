@@ -16,12 +16,6 @@ public class ReportFind {
     private boolean isFound;
     private String path;
 
-    public ReportFind(long timeFind, List<Match> matchArr) {
-        isFound = false;
-        this.timeStart = timeFind;
-        this.matchArr = matchArr;
-        matchArr = new ArrayList<>();
-    }
 
     ReportFind() {
         isFound = false;

@@ -13,13 +13,10 @@ import java.nio.file.StandardOpenOption;
 
 public class Myr {
 
-    public static ReportFind run(String grepFor, Path path) throws IOException {
-        System.out.println("Myr thread run!");
-        return searchFor(grepFor,path);
-    }
+
     private static final int MAPSIZE = 4 * 1024; // 4K - make this * 1024 to 4MB in a real system.
 
-    private static ReportFind searchFor(String grepFor, Path path) throws IOException {
+    public static ReportFind searchFor(String grepFor, Path path) throws IOException {
         ReportFind reportFind = new ReportFind();
         if (grepFor.isEmpty()) {
             reportFind.setFound(true);
