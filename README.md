@@ -1,4 +1,7 @@
 # Search_engine
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1e3b583799ff4d8a8ed8ac7d03d2c874)](https://app.codacy.com/manual/WhiteBite/Search_engine?utm_source=github.com&utm_medium=referral&utm_content=WhiteBite/Search_engine&utm_campaign=Badge_Grade_Dashboard)
+
 ## Задание №1
 
 Написать программу для поиска заданного текста в лог файлах.
