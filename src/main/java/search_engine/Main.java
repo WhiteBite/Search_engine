@@ -11,15 +11,13 @@ import java.io.IOException;
 
 
 public class Main extends Application {
-    boolean isRoot = false;
-
     @SneakyThrows
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) {
         initRootLayout(primaryStage);
 
     }
 
-    public void initRootLayout(Stage primaryStage) throws IOException {
+    private void initRootLayout(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/fxml/main.fxml"));
         AnchorPane anchorPane = loader.load();

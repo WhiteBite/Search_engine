@@ -1,30 +1,24 @@
 package search_engine;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import search_engine.algorithm.HistorySearch;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 
 //import javafx.scene.control.*;
 
 public class Controller {
-    // private HashSet<TreeItem<File>> openTabs = new HashSet<TreeItem<File>>();
     private HashMap<TreeItem<File>, Tab> openTabs = new HashMap<>();
     @FXML
     CheckBox checkInWord;
@@ -33,7 +27,7 @@ public class Controller {
     @FXML
     Button btnFind;
     @FXML
-    TreeView fileView;
+    TreeView<File> fileView;
     @FXML
     TextField searchWord;
     @FXML
@@ -42,42 +36,55 @@ public class Controller {
     TextField filterExt;
     @FXML
     Button btnDirChooser;
-    boolean isRoot = false; //TODO move it on Config
-    FileSystemTree treeView = new FileSystemTree();
+    private FileSystemTree treeView;
 
-
-    void newFind() {
+    private void newFind() {
         makeOldTab();
         HistorySearch.history.clear();
     }
 
-    void makeOldTab() {
+    private void makeOldTab() {
         for (var item : openTabs.entrySet()) {
             item.getValue().setText("OLD_" + item.getValue().getText());
         }
     }
 
+    public void resetValue() {
+        filterExt.setText("");
+        searchWord.setText("");
+    }
+
     @FXML
     private void initialize() {
+        //TODO
+        treeView = new FileSystemTree();
 
-        checkInWord.setOnAction(actionEvent -> {
-            Config.setInWorld(checkInWord.isSelected());
-        });
+        Config.setInWord(true);
+        checkInWord.setOnAction(actionEvent -> Config.setInWord(checkInWord.isSelected()));
 
+        //Event Button Search
         btnFind.setOnAction(event -> {
             newFind();
-            if (isRoot) {
-                try {
-                    String filtertExt = "";
-                    String searchW = "";
-                    if (filterExt.getText() != null)
-                        filtertExt = filterExt.getText();
-                    if (searchWord.getText() != null)
-                        searchW = searchWord.getText();
-                    fileView.setRoot(treeView.filterChanged(filtertExt, searchW));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            if (Config.isRoot()) {
+                String finalSFilterExt = filterExt.getText();
+                String finalSearchW = searchWord.getText();
+                new Thread(() -> {
+                    try {
+                        fileView.setRoot(treeView.filterChanged(finalSFilterExt, finalSearchW));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }).start();
+           /*     CompletableFuture.runAsync(() -> {
+                    try {
+                        Date today = new Date();
+                        fileView.setRoot(treeView.filterChanged(finalSFilterExt, finalSearchW));
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                });*/
+
             }
         });
 
@@ -87,7 +94,7 @@ public class Controller {
         btnDirChooser.setOnAction(event -> {
             File dir = directoryChooser.showDialog(((Node) event.getTarget()).getScene().getWindow());
             if (dir != null) {
-                isRoot = true;
+                Config.setRoot(true);
                 treeView.setRootFolder(dir.getAbsolutePath());
                 try {
                     treeView.createTree();
@@ -102,67 +109,44 @@ public class Controller {
 
         filterExt.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
-                fileView.setRoot(treeView.filterChanged(newValue, ""));
+                TreeItem<File> q = treeView.filterChanged(newValue, "");
+                fileView.setRoot(q);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
 
 
-        fileView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                if (newValue == null)
-                    return;
-                TreeItem<File> selectedItem = (TreeItem<File>) newValue;
+        fileView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null)
+                return;
 
 
-                System.out.println("Selected File : " + selectedItem.getValue().getAbsolutePath());
-                if (selectedItem.getValue().isFile()) {
-                    // Tab tab;
-                    if (!openTabs.containsKey(selectedItem)) {
-                        ObservableList<String> lines = FXCollections.observableArrayList();
-                        ListView<String> listView = new ListView<>(lines);
-                        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-                        listView.setCellFactory(TextFieldListCell.forListView());
-                        listView.setOnEditCommit(new EventHandler<ListView.EditEvent<String>>() {
-                            @Override
-                            public void handle(ListView.EditEvent<String> t) {
-                                listView.getItems().set(t.getIndex(), t.getNewValue());
-                            }
-                        });
-                        listView.setEditable(true); // change
-                        listView.getItems().clear();
-                        int numRom = 0;
-                        try {
-                            BufferedReader in = new BufferedReader(new FileReader(selectedItem.getValue().getAbsolutePath()));
-                            String s;
-                            while ((s = in.readLine()) != null) {
-                                numRom++;
-                                listView.getItems().add(numRom + ": " + s);
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+            System.out.println("Selected File : " + newValue.getValue().getAbsolutePath());
+            if (newValue.getValue().isFile()) {
+                // Tab tab;
+                if (!openTabs.containsKey(newValue)) {
+                    ObservableList<String> lines = FXCollections.observableArrayList();
+                    ListView<String> listView = new ListView<>(lines);
+                    CompletableFuture.runAsync(() -> new LoaderDoc(newValue, listView).run());
+                    //Thread thread = new Thread(new LoaderDoc(selectedItem, listView)); //отправляю сюда listView, чтоб он наполнился данными из файла.
+                    //  thread.start();
+                    Tab tab = new Tab(newValue.getValue().getName());
+                    tabPane.getTabs().add(tab);
+                    openTabs.put(newValue, tab);
+                    TextArea textAreaReport = new TextArea();
 
-
-                        Tab tab = new Tab(selectedItem.getValue().getName());
-                        tabPane.getTabs().add(tab);
-                        openTabs.put(selectedItem, tab);
-                        TextArea textAreaReport = new TextArea();
-
-                        //insert in tab
-                        VBox tmp = new VBox(listView, textAreaReport);
-                        tab.setContent(tmp);
-                        Path tmpF = Paths.get(selectedItem.getValue().getPath());
-                        if (!HistorySearch.history.isEmpty()) {
-                            String q = HistorySearch.history.get(tmpF).getResult().toString();
-                            textAreaReport.setText(q);
-                        }
+                    //insert in tab
+                    VBox tmp = new VBox(listView, textAreaReport);
+                    tab.setContent(tmp);
+                    Path tmpF = Paths.get(newValue.getValue().getPath());
+                    if (!HistorySearch.history.isEmpty()) {
+                        String q = HistorySearch.history.get(tmpF).getResult().toString();
+                        textAreaReport.setText(q);
                     }
-                    tabPane.getSelectionModel().select(openTabs.get(selectedItem)); //open current tab
-
                 }
+                tabPane.getSelectionModel().select(openTabs.get(newValue)); //open current tab
+
             }
         });
     }
@@ -173,6 +157,5 @@ public class Controller {
         directoryChooser.setTitle("Select Some Directories");
         // Set Initial Directory
         directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        // directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
     }
 }

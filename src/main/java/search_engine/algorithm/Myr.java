@@ -13,15 +13,18 @@ import java.nio.file.StandardOpenOption;
 
 public class Myr {
 
+    public static ReportFind run(String grepFor, Path path) throws IOException {
+        System.out.println("Myr thread run!");
+        return searchFor(grepFor,path);
+    }
     private static final int MAPSIZE = 4 * 1024; // 4K - make this * 1024 to 4MB in a real system.
 
-    public static ReportFind searchFor(String grepFor, Path path) throws IOException {
+    private static ReportFind searchFor(String grepFor, Path path) throws IOException {
         ReportFind reportFind = new ReportFind();
         if (grepFor.isEmpty()) {
             reportFind.setFound(true);
             return reportFind;
         }
-        //ReportFind reportFind = new ReportFind();
         reportFind.setPath(path.toString());
         final byte[] toSearch = grepFor.getBytes(StandardCharsets.UTF_8);
         int padding = 1; // need to scan 1 character ahead in case it is a word boundary.
@@ -40,7 +43,7 @@ public class Myr {
                 // different limits depending on whether we are the last mapped segment.
                 int limit = tryMap == toMap ? MAPSIZE : (toMap - toSearch.length);
                 MappedByteBuffer buffer = channel.map(MapMode.READ_ONLY, pos, toMap);
-                System.out.println("Mapped from " + pos + " for " + toMap);
+               // System.out.println("Mapped from " + pos + " for " + toMap);
 
                 pos += (tryMap == toMap) ? MAPSIZE : toMap;
                 for (int i = 0; i < limit; i++) {
@@ -59,13 +62,13 @@ public class Myr {
                     } else if (b == '\r' || b == ' ') {
                         inWord = false;
                     } else {
-                        if (!Config.isInWorld())
+                        if (!Config.isInWord())
                             inWord = false;
                         if (!inWord) {
                             if (wordMatch(buffer, i, toMap, toSearch)) {
                                 //add match
 
-                                reportFind.addMatch(new Match(lineCount + 1, getString(buffer, posL+1)));
+                                reportFind.addMatch(new Match(lineCount + 1, getString(buffer, posL + 1)));
                                 scanToLineEnd = true;
                             } else {
                                 inWord = true;
@@ -89,7 +92,7 @@ public class Myr {
             }
         }
 
-        if (Config.isInWorld()) {
+        if (Config.isInWord()) {
             byte nxt = (pos + toSearch.length) == toMap ? (byte) ' ' : buffer.get(pos + toSearch.length);
             return nxt == ' ' || nxt == '\n' || nxt == '\r';
         }

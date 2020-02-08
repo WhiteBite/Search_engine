@@ -4,9 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-
 public class Config {
     @Getter
     @Setter
-    private static boolean inWorld = true;
+    private static boolean inWord;
+    @Getter
+    @Setter
+    private static boolean isRoot;
+
+    Config() {
+    }
 }

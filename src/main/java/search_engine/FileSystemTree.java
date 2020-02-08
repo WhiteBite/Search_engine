@@ -13,14 +13,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
-import java.util.function.Function;
 
 class FileSystemTree {
     @Getter
     @Setter
     String rootFolder = ""; // TODO: change or make selectable
-    TreeView<File> treeView;
-    TreeItem<File> rootTreeItem;
+    private TreeView<File> treeView;
+    private TreeItem<File> rootTreeItem;
 
 
     FileSystemTree() {
@@ -39,15 +38,10 @@ class FileSystemTree {
         treeView.setRoot(rootTreeItem);
         createTree(rootTreeItem);
         // sort tree structure by name
-        rootTreeItem.getChildren().sort(Comparator.comparing(new Function<TreeItem<File>, String>() {
-            @Override
-            public String apply(TreeItem<File> t) {
-                return t.getValue().toString().toLowerCase();
-            }
-        }));
+        rootTreeItem.getChildren().sort(Comparator.comparing(t -> t.getValue().toString().toLowerCase()));
     }
 
-    public static void createTree(TreeItem<File> rootItem) throws IOException {
+    private static void createTree(TreeItem<File> rootItem) {
 
 
         //TODO check it later
@@ -81,23 +75,21 @@ class FileSystemTree {
             }
             //TODO reformat
             if (isMatch(filteredChild.getValue(), filter)) {
-                if (Myr.searchFor(searchString, Paths.get(filteredChild.getValue().getPath())).isFound())
+                if (Myr.run(searchString, Paths.get(filteredChild.getValue().getPath())).isFound())
                     filteredRoot.getChildren().add(filteredChild);
-//                }
             }
         }
     }
 
     private boolean isMatch(File value, String filter) {
         //    return value.toString().toLowerCase().endsWith(filter.toLowerCase()); // TODO: optimize or change (check file extension, etc)
-        if (value.toString().toLowerCase().endsWith(filter.toLowerCase()))
+        boolean b = value.toString().toLowerCase().endsWith(filter.toLowerCase());
+        if (b)
             System.out.println("Найден файл: " + value.getAbsolutePath() + " Filter: " + filter);
-        return value.toString().toLowerCase().endsWith(filter.toLowerCase());
-
+        return b;
     }
 
-
-    TreeItem filterChanged(String filterExt, String searchWord) throws IOException {
+    TreeItem<File> filterChanged(String filterExt, String searchWord) throws IOException {
         if (filterExt.isEmpty()) {
             treeView.setRoot(rootTreeItem);
         } else {
