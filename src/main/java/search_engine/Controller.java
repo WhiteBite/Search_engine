@@ -21,6 +21,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
+//import javafx.scene.control.*;
+
 public class Controller {
     // private HashSet<TreeItem<File>> openTabs = new HashSet<TreeItem<File>>();
     private HashMap<TreeItem<File>, Tab> openTabs = new HashMap<>();
