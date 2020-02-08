@@ -29,8 +29,6 @@ public class Controller {
     @FXML
     TextField searchWord;
     @FXML
-    TextArea reportInfo;
-    @FXML
     TextField filterExt;
     @FXML
     Button btnDirChooser;
