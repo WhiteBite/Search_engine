@@ -51,7 +51,7 @@ public class ReportFind {
         return result;
     }
 
-    void stopTime() {
+    public void stopTime() {
         timeStop = System.currentTimeMillis();
     }
 }

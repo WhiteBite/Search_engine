@@ -40,8 +40,8 @@ public class Myr {
                 // different limits depending on whether we are the last mapped segment.
                 int limit = tryMap == toMap ? MAPSIZE : (toMap - toSearch.length);
                 MappedByteBuffer buffer = channel.map(MapMode.READ_ONLY, pos, toMap);
-               // System.out.println("Mapped from " + pos + " for " + toMap);
-
+                System.out.println("Mapped from " + pos + " for " + toMap);
+                //Thread.sleep(50);
                 pos += (tryMap == toMap) ? MAPSIZE : toMap;
                 for (int i = 0; i < limit; i++) {
                     final byte b = buffer.get(i);

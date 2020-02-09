@@ -10,21 +10,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class LoaderDoc implements Runnable {
-    private TreeItem<File> selectedItem;
-    private ListView<String> listView;
+public class LoaderDoc {
 
-    LoaderDoc(TreeItem<File> selectedItem, ListView<String> listView) {
-        this.selectedItem = selectedItem;
-        this.listView = listView;
+
+    LoaderDoc() {
     }
 
-    public void run() {
-        System.out.println("Thread LoaderDoc run!");
-        loadDoc(selectedItem, listView);
-    }
-
-    private void loadDoc(TreeItem<File> selectedItem, ListView<String> listView) {
+    public void loadDoc(TreeItem<File> selectedItem, ListView<String> listView) {
         listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         listView.setCellFactory(TextFieldListCell.forListView());
         listView.setOnEditCommit(t -> listView.getItems().set(t.getIndex(), t.getNewValue()));
