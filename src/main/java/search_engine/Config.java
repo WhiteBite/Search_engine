@@ -3,8 +3,6 @@ package search_engine;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class Config {
@@ -15,6 +13,12 @@ public class Config {
     @Setter
     private static boolean isRoot;
 
+    @Getter
+    private static final String EMPTY_FILE_MSG = "File is Empty";
+    @Getter
+    private static final String SEARCH_MSG = "Идёт поиск";
+/*    @Getter
+    private static final String EMPTY_FILE_MSG = "File is Empty";*/
 
 
     Config() {

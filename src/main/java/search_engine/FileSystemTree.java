@@ -15,7 +15,7 @@ import java.util.Comparator;
 
 class FileSystemTree {
     @Setter
-    String rootFolder = ""; // TODO: change or make selectable
+    String rootFolder = "";
     private TreeView<File> treeView;
     private TreeItem<File> rootTreeItem;
 

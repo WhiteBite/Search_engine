@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class LoaderDoc {
+class LoaderDoc {
 
 
     LoaderDoc() {
@@ -32,6 +32,9 @@ public class LoaderDoc {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if(listView.getItems().isEmpty()){
+            listView.getItems().add(Config.getEMPTY_FILE_MSG());
         }
     }
 }

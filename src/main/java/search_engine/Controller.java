@@ -10,15 +10,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TreeView;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import lombok.SneakyThrows;
@@ -49,6 +41,11 @@ public class Controller {
     TextField filterExt;
     @FXML
     Button btnDirChooser;
+    @FXML
+    Label currentDir;
+    @FXML
+    Label status;
+
     private FileSystemTree treeView;
 
     private void newFind() {
@@ -62,40 +59,32 @@ public class Controller {
         }
     }
 
-    public void resetValue() {
-        filterExt.setText("");
-        searchWord.setText("");
-    }
-
-    @FXML
-    private void initialize() {
-        //TODO
-        treeView = new FileSystemTree();
-
-        Config.setInWord(true);
-        checkInWord.setOnAction(actionEvent -> Config.setInWord(checkInWord.isSelected()));
-
+    private void InitBtnFind() {
         //Event Button Search
         btnFind.setOnAction(event -> {
             newFind();
             if (Config.isRoot()) {
+                status.setText(Config.getSEARCH_MSG());
                 String finalSFilterExt = filterExt.getText();
                 String finalSearchW = searchWord.getText();
                 if (findThread != null && findThread.isAlive())
                     findThread.interrupt();
                 findThread = new Thread(() -> {
                     try {
-                        fileView.setRoot(treeView.filterChanged(finalSFilterExt, finalSearchW));
+                        var q = treeView.filterChanged(finalSFilterExt, finalSearchW);
+                        Platform.runLater(() -> fileView.setRoot(q));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 });
+                findThread.setName("findThread");
                 findThread.setDaemon(true);
                 findThread.start();
             }
         });
+    }
 
-
+    private void InitDirectoryChooser() {
         final DirectoryChooser directoryChooser = new DirectoryChooser();
         configuringDirectoryChooser(directoryChooser);
         btnDirChooser.setOnAction(event -> {
@@ -105,9 +94,28 @@ public class Controller {
                 treeView.setRootFolder(dir.getAbsolutePath());
                 treeView.createTree();
                 filterExt.setText(".log");
+                currentDir.setText(dir.getAbsolutePath());
                 System.out.println("dir.getAbsolutePath() = " + dir.getAbsolutePath());
             }
         });
+    }
+
+    private void configuringDirectoryChooser(DirectoryChooser directoryChooser) {
+        // Set title for DirectoryChooser
+        directoryChooser.setTitle("Select Some Directories");
+        // Set Initial Directory
+        directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+    }
+
+    @FXML
+    private void initialize() {
+        treeView = new FileSystemTree();
+
+        Config.setInWord(true);
+        checkInWord.setOnAction(actionEvent -> Config.setInWord(checkInWord.isSelected()));
+
+        InitBtnFind();
+        InitDirectoryChooser();
 
 
         //Listener FilterExt
@@ -119,23 +127,17 @@ public class Controller {
                 e.printStackTrace();
             }
         });
+
         fileView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null)
                 return;
             System.out.println("Selected File : " + newValue.getValue().getAbsolutePath());
             if (newValue.getValue().isFile()) {
-                // Tab tab;
                 if (!openTabs.containsKey(newValue)) {
                     ObservableList<String> lines = FXCollections.observableArrayList();
                     ListView<String> listView = new ListView<>(lines);
                     // CompletableFuture.runAsync(() -> new LoaderDoc().loadDoc(newValue, listView));
-                    new Thread(() -> {
-
-                        new LoaderDoc().loadDoc(newValue, listView);
-
-                    }).start();
-                    //Thread thread = new Thread(new LoaderDoc(selectedItem, listView)); //отправляю сюда listView, чтоб он наполнился данными из файла.
-                    //  thread.start();
+                    new Thread(() -> new LoaderDoc().loadDoc(newValue, listView)).start();
                     Tab tab = new Tab(newValue.getValue().getName());
                     tab.setOnClosed(event -> openTabs.values().remove(tab)
                     );
@@ -148,7 +150,6 @@ public class Controller {
                     tab.setContent(tmp);
                     Path tmpF = Paths.get(newValue.getValue().getPath());
 
-
                     ReportFind reportFind = HistorySearch.history.get(tmpF);
                     if (!HistorySearch.history.isEmpty() && reportFind != null) {
                         textAreaReport.setText(reportFind.getResult().toString());
@@ -157,13 +158,5 @@ public class Controller {
                 tabPane.getSelectionModel().select(openTabs.get(newValue)); //open current tab
             }
         });
-    }
-
-
-    private void configuringDirectoryChooser(DirectoryChooser directoryChooser) {
-        // Set title for DirectoryChooser
-        directoryChooser.setTitle("Select Some Directories");
-        // Set Initial Directory
-        directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
     }
 }
