@@ -1,21 +1,13 @@
 package search_engine;
 
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.SneakyThrows;
 import search_engine.algorithm.HistorySearch;
 import search_engine.algorithm.ReportFind;
 
@@ -23,10 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class Controller {
     private HashMap<TreeItem<File>, Tab> openTabs = new HashMap<>();
