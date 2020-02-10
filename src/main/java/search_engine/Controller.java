@@ -13,6 +13,8 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import search_engine.algorithm.HistorySearch;
 import search_engine.algorithm.ReportFind;
@@ -21,12 +23,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class Controller {
     private HashMap<TreeItem<File>, Tab> openTabs = new HashMap<>();
-    Thread findThread;
+    private Thread findThread;
     @FXML
     CheckBox checkInWord;
     @FXML
@@ -44,7 +48,7 @@ public class Controller {
     @FXML
     Label currentDir;
     @FXML
-    Label status;
+    Label btnStatus;
 
     private FileSystemTree treeView;
 
@@ -59,20 +63,28 @@ public class Controller {
         }
     }
 
+
     private void InitBtnFind() {
         //Event Button Search
         btnFind.setOnAction(event -> {
             newFind();
             if (Config.isRoot()) {
-                status.setText(Config.getSEARCH_MSG());
+
                 String finalSFilterExt = filterExt.getText();
                 String finalSearchW = searchWord.getText();
-                if (findThread != null && findThread.isAlive())
+                if (findThread != null && findThread.isAlive()){
                     findThread.interrupt();
+                    StatusController.getStatusMsg().remove(Config.getSEARCH_MSG());
+                    StatusController.ResetStatus(btnStatus);
+                }
                 findThread = new Thread(() -> {
                     try {
+                        StatusController.getStatusMsg().add(Config.getSEARCH_MSG());
+                        StatusController.ResetStatus(btnStatus);
                         var q = treeView.filterChanged(finalSFilterExt, finalSearchW);
                         Platform.runLater(() -> fileView.setRoot(q));
+                        StatusController.getStatusMsg().remove(Config.getSEARCH_MSG());
+                        StatusController.ResetStatus(btnStatus);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -109,6 +121,7 @@ public class Controller {
 
     @FXML
     private void initialize() {
+
         treeView = new FileSystemTree();
 
         Config.setInWord(true);
@@ -137,7 +150,13 @@ public class Controller {
                     ObservableList<String> lines = FXCollections.observableArrayList();
                     ListView<String> listView = new ListView<>(lines);
                     // CompletableFuture.runAsync(() -> new LoaderDoc().loadDoc(newValue, listView));
-                    new Thread(() -> new LoaderDoc().loadDoc(newValue, listView)).start();
+                    new Thread(() -> {
+                        StatusController.getStatusMsg().add(Config.getOPEN_DOC_MSH());
+                        StatusController.ResetStatus(btnStatus);
+                        new LoaderDoc().loadDoc(newValue, listView);
+                        StatusController.getStatusMsg().remove(Config.getOPEN_DOC_MSH());
+                        StatusController.ResetStatus(btnStatus);
+                    }).start();
                     Tab tab = new Tab(newValue.getValue().getName());
                     tab.setOnClosed(event -> openTabs.values().remove(tab)
                     );

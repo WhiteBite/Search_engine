@@ -51,7 +51,7 @@
                               <CheckBox fx:id="checkInWord" layoutX="473.0" layoutY="4.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="172.0" selected="true" text="Искать отдельное слово" />
                               <Label alignment="CENTER" layoutX="3.0" layoutY="30.0" prefHeight="17.0" prefWidth="108.0" text="Текущая папка: " />
                               <Label fx:id="currentDir" alignment="CENTER" layoutX="121.0" layoutY="30.0" maxHeight="350.0" prefHeight="17.0" prefWidth="203.0" text="не выбрана" textAlignment="CENTER" />
-                              <Label fx:id="status" layoutX="649.0" layoutY="5.0" text="Status:" wrapText="true" />
+                              <Label fx:id="btnStatus" layoutX="649.0" layoutY="5.0" text="Status:" wrapText="true" />
                            </children>
                         </Pane>
                     </items>
