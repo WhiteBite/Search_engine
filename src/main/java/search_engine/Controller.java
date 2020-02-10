@@ -1,6 +1,9 @@
 package search_engine;
 
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -31,6 +34,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class Controller {
     private HashMap<TreeItem<File>, Tab> openTabs = new HashMap<>();
+    Thread findThread;
     @FXML
     CheckBox checkInWord;
     @FXML
@@ -77,35 +81,17 @@ public class Controller {
             if (Config.isRoot()) {
                 String finalSFilterExt = filterExt.getText();
                 String finalSearchW = searchWord.getText();
-              /*  Platform.runLater(new Runnable() {
-
-                    @SneakyThrows
-                    @Override
-                    public void run() {
-                        fileView.setRoot(treeView.filterChanged(finalSFilterExt, finalSearchW));
-                    }
-                });;*/
-                new Thread(() -> {
-                    Platform.runLater(() -> {
-
-                        try {
-                            fileView.setRoot(treeView.filterChanged(finalSFilterExt, finalSearchW));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
-
-                }).start();
-
-           /*     CompletableFuture.runAsync(() -> {
+                if (findThread != null && findThread.isAlive())
+                    findThread.interrupt();
+                findThread = new Thread(() -> {
                     try {
-                        Date today = new Date();
                         fileView.setRoot(treeView.filterChanged(finalSFilterExt, finalSearchW));
-                    } catch (IOException | InterruptedException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
-                });*/
-
+                });
+                findThread.setDaemon(true);
+                findThread.start();
             }
         });
 
@@ -133,8 +119,6 @@ public class Controller {
                 e.printStackTrace();
             }
         });
-
-
         fileView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null)
                 return;
@@ -153,6 +137,8 @@ public class Controller {
                     //Thread thread = new Thread(new LoaderDoc(selectedItem, listView)); //отправляю сюда listView, чтоб он наполнился данными из файла.
                     //  thread.start();
                     Tab tab = new Tab(newValue.getValue().getName());
+                    tab.setOnClosed(event -> openTabs.values().remove(tab)
+                    );
                     tabPane.getTabs().add(tab);
                     openTabs.put(newValue, tab);
                     TextArea textAreaReport = new TextArea();
@@ -169,7 +155,6 @@ public class Controller {
                     }
                 }
                 tabPane.getSelectionModel().select(openTabs.get(newValue)); //open current tab
-
             }
         });
     }

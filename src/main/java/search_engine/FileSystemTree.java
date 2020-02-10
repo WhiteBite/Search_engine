@@ -24,7 +24,7 @@ class FileSystemTree {
         treeView = new TreeView<>();
     }
 
-    FileSystemTree(String root) throws IOException {
+    FileSystemTree(String root) {
         this();
         rootFolder = root;
         createTree();
