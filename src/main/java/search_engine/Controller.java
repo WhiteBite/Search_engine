@@ -38,6 +38,13 @@ public class Controller {
     Label currentDir;
     @FXML
     Label btnStatus;
+    @FXML
+    TextField textGoTo;
+    @FXML
+    Button btnGoTo;
+
+    //my listView
+    private ListView<String> listView;
 
     private FileSystemTree treeView;
 
@@ -52,8 +59,26 @@ public class Controller {
         }
     }
 
+    private void initBtnGoTo() {
+        //Event Button Search
+        btnGoTo.setOnAction(event -> {
+            int index = Integer.parseInt(textGoTo.getText()) - 1;
+            Platform.runLater(new Runnable() {
 
-    private void InitBtnFind() {
+                @Override
+                public void run() {
+                    if (listView != null) {
+                        listView.scrollTo(index);
+                        listView.getSelectionModel().select(index);
+                    }
+                }
+            });
+//            listView.getFocusModel().focus(index);
+//            listView.scrollTo(index);
+        });
+    }
+
+    private void initBtnFind() {
         //Event Button Search
         btnFind.setOnAction(event -> {
             newFind();
@@ -61,7 +86,7 @@ public class Controller {
 
                 String finalSFilterExt = filterExt.getText();
                 String finalSearchW = searchWord.getText();
-                if (findThread != null && findThread.isAlive()){
+                if (findThread != null && findThread.isAlive()) {
                     findThread.interrupt();
                     StatusController.getStatusMsg().remove(Config.getSEARCH_MSG());
                     StatusController.ResetStatus(btnStatus);
@@ -85,7 +110,7 @@ public class Controller {
         });
     }
 
-    private void InitDirectoryChooser() {
+    private void initDirectoryChooser() {
         final DirectoryChooser directoryChooser = new DirectoryChooser();
         configuringDirectoryChooser(directoryChooser);
         btnDirChooser.setOnAction(event -> {
@@ -116,8 +141,9 @@ public class Controller {
         Config.setInWord(true);
         checkInWord.setOnAction(actionEvent -> Config.setInWord(checkInWord.isSelected()));
 
-        InitBtnFind();
-        InitDirectoryChooser();
+        initBtnFind();
+        initBtnGoTo();
+        initDirectoryChooser();
 
 
         //Listener FilterExt
@@ -137,7 +163,7 @@ public class Controller {
             if (newValue.getValue().isFile()) {
                 if (!openTabs.containsKey(newValue)) {
                     ObservableList<String> lines = FXCollections.observableArrayList();
-                    ListView<String> listView = new ListView<>(lines);
+                    listView = new ListView<>(lines);
                     // CompletableFuture.runAsync(() -> new LoaderDoc().loadDoc(newValue, listView));
                     new Thread(() -> {
                         StatusController.getStatusMsg().add(Config.getOPEN_DOC_MSH());
