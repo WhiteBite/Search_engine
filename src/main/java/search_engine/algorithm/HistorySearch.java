@@ -1,9 +1,6 @@
 package search_engine.algorithm;
 
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TreeItem;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import lombok.Getter;
@@ -24,7 +21,7 @@ public class HistorySearch {
         return (ReportFind) history.values().toArray()[index];
     }
 
-    public static void fillTable(TableView<Match> table, TreeItem<File> TreeItem) {
+    public static void fillTable(TableView<Match> table, TreeItem<File> TreeItem,Label labelPath,Label labelTimeSearch) {
         TableColumn<Match, Integer> numRow = new TableColumn<>("No");
         numRow.setCellValueFactory(new PropertyValueFactory<>("numRow"));
         TableColumn<Match, String> rowInfo = new TableColumn<>("String");
@@ -36,6 +33,8 @@ public class HistorySearch {
         Path tmpF = Paths.get(TreeItem.getValue().getPath());
         ReportFind reportFind = HistorySearch.history.get(tmpF);
         if (!HistorySearch.history.isEmpty() && reportFind != null) {
+            labelPath.setText("Search time:" + (reportFind.getTimeStop() - reportFind.getTimeStart()) + ("ms"));
+            labelTimeSearch.setText("Path: " + reportFind.getPath());
             table.getItems().addAll(reportFind.getMatchArr());
         }
 

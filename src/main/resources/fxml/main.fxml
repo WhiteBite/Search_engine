@@ -5,7 +5,10 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TreeView?>
@@ -16,60 +19,78 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.231" xmlns:fx="http://javafx.com/fxml/1" fx:controller="search_engine.Controller">
-   <children>
-      <BorderPane fx:id="root" prefHeight="562.0" prefWidth="847.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <center>
-            <SplitPane fx:id="splitView" dividerPositions="0.3" prefHeight="534.0" prefWidth="847.0" BorderPane.alignment="CENTER">
-              <items>
-                  <VBox>
-                     <children>
-                        <TextField fx:id="filterExt" prefHeight="25.0" prefWidth="113.0" />
-                        <TreeView fx:id="fileView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
-                     </children>
-                  </VBox>
-                  <VBox prefHeight="200.0" prefWidth="100.0">
-                     <children>
-                        <TabPane fx:id="tabPane" nodeOrientation="LEFT_TO_RIGHT" prefHeight="507.0" prefWidth="588.0" side="RIGHT" />
-                     </children>
-                  </VBox>
-              </items>
-            </SplitPane>
-         </center>
-         <top>
-            <VBox fx:id="menus" prefHeight="38.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-               <children>
-                  <ToolBar fx:id="tools" prefHeight="127.0" prefWidth="847.0">
+<AnchorPane maxHeight="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.231"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="search_engine.Controller">
+    <children>
+        <BorderPane fx:id="root" prefHeight="562.0" prefWidth="847.0" AnchorPane.bottomAnchor="0.0"
+                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <center>
+                <SplitPane fx:id="splitView" dividerPositions="0.3" prefHeight="534.0" prefWidth="847.0"
+                           BorderPane.alignment="CENTER">
                     <items>
-                        <Pane prefHeight="53.0" prefWidth="831.0">
-                           <children>
-                            <Button fx:id="btnFind" alignment="CENTER" contentDisplay="CENTER" layoutX="336.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="124.0" text="Поиск" textAlignment="CENTER">
-                                 <opaqueInsets>
-                                    <Insets />
-                                 </opaqueInsets>
-                              </Button>
-                              <Button fx:id="btnDirChooser" mnemonicParsing="false" prefHeight="25.0" prefWidth="109.0" text="Выбрать папку" />
-                              <TextField fx:id="searchWord" alignment="CENTER" layoutX="122.0" prefHeight="25.0" prefWidth="203.0" />
-                              <CheckBox fx:id="checkInWord" layoutX="473.0" layoutY="4.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="172.0" selected="true" text="Искать отдельное слово" />
-                              <Label alignment="CENTER" layoutX="1.0" layoutY="31.0" prefHeight="17.0" prefWidth="108.0" text="Текущая папка: " />
-                              <Label fx:id="currentDir" layoutX="122.0" layoutY="31.0" maxHeight="350.0" prefHeight="17.0" prefWidth="203.0" text="не выбрана" textAlignment="CENTER">
-                                 <effect>
-                                    <Lighting bumpInput="$null" diffuseConstant="1.33" specularConstant="1.21">
-                                       <light>
-                                          <Light.Distant color="#b10be5" />
-                                       </light>
-                                    </Lighting>
-                                 </effect></Label>
-                              <Label fx:id="btnStatus" layoutX="659.0" layoutY="4.0" text="Статус: " wrapText="true" />
-                              <Button fx:id="btnGoTo" layoutX="336.0" layoutY="27.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="124.0" text="Перейти к " />
-                              <TextField fx:id="textGoTo" layoutX="472.0" layoutY="26.0" prefHeight="25.0" prefWidth="159.0" />
-                           </children>
-                        </Pane>
+                        <VBox>
+                            <children>
+                                <TextField fx:id="filterExt" prefHeight="25.0" prefWidth="113.0"/>
+                                <TreeView fx:id="fileView" VBox.vgrow="ALWAYS"/>
+                            </children>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                            <children>
+                                <TabPane fx:id="tabPane" nodeOrientation="LEFT_TO_RIGHT" side="RIGHT">
+                                </TabPane>
+                            </children>
+                        </VBox>
                     </items>
-                  </ToolBar>
-               </children>
-            </VBox>
-         </top>
-      </BorderPane>
-   </children>
+                </SplitPane>
+            </center>
+            <top>
+                <VBox fx:id="menus" prefHeight="38.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <ToolBar fx:id="tools" prefHeight="127.0" prefWidth="847.0">
+                            <items>
+                                <Pane prefHeight="53.0" prefWidth="831.0">
+                                    <children>
+                                        <Button fx:id="btnFind" alignment="CENTER" contentDisplay="CENTER"
+                                                layoutX="336.0" mnemonicParsing="false" prefHeight="25.0"
+                                                prefWidth="124.0" text="Поиск" textAlignment="CENTER">
+                                            <opaqueInsets>
+                                                <Insets/>
+                                            </opaqueInsets>
+                                        </Button>
+                                        <Button fx:id="btnDirChooser" mnemonicParsing="false" prefHeight="25.0"
+                                                prefWidth="109.0" text="Выбрать папку"/>
+                                        <TextField fx:id="searchWord" alignment="CENTER" layoutX="122.0"
+                                                   prefHeight="25.0" prefWidth="203.0"/>
+                                        <CheckBox fx:id="checkInWord" layoutX="473.0" layoutY="4.0"
+                                                  mnemonicParsing="false" prefHeight="17.0" prefWidth="172.0"
+                                                  selected="true" text="Искать отдельное слово"/>
+                                        <Label alignment="CENTER" layoutX="1.0" layoutY="31.0" prefHeight="17.0"
+                                               prefWidth="108.0" text="Текущая папка: "/>
+                                        <Label fx:id="currentDir" layoutX="122.0" layoutY="31.0" maxHeight="350.0"
+                                               prefHeight="17.0" prefWidth="203.0" text="не выбрана"
+                                               textAlignment="CENTER">
+                                            <effect>
+                                                <Lighting bumpInput="$null" diffuseConstant="1.33"
+                                                          specularConstant="1.21">
+                                                    <light>
+                                                        <Light.Distant color="#b10be5"/>
+                                                    </light>
+                                                </Lighting>
+                                            </effect>
+                                        </Label>
+                                        <Label fx:id="btnStatus" layoutX="659.0" layoutY="4.0" text="Статус: "
+                                               wrapText="true"/>
+                                        <Button fx:id="btnGoTo" layoutX="336.0" layoutY="27.0" mnemonicParsing="false"
+                                                prefHeight="25.0" prefWidth="124.0" text="Перейти к "/>
+                                        <TextField fx:id="textGoTo" layoutX="472.0" layoutY="26.0" prefHeight="25.0"
+                                                   prefWidth="159.0"/>
+                                    </children>
+                                </Pane>
+                            </items>
+                        </ToolBar>
+                    </children>
+                </VBox>
+            </top>
+        </BorderPane>
+    </children>
 </AnchorPane>

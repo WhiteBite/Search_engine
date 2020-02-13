@@ -1,8 +1,6 @@
 package search_engine.algorithm;
 
 import lombok.Getter;
-import lombok.Setter;
-//TODO Make it with lombok
 @Getter
 public class Match {
 

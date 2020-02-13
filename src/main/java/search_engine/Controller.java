@@ -1,23 +1,19 @@
 package search_engine;
 
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import search_engine.algorithm.HistorySearch;
-import search_engine.algorithm.ReportFind;
 import search_engine.algorithm.Match;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class Controller {
@@ -72,7 +68,7 @@ public class Controller {
     }
 
     private void initBtnGoTo() {
-        //Event Button Search
+        //Event Goto button
         btnGoTo.setOnAction(event -> {
             try {
                 int index = Integer.parseInt(textGoTo.getText()) - 1;
@@ -182,20 +178,25 @@ public class Controller {
                     tabPane.getTabs().add(tab);
                     openTabs.put(newValue, tab);
 
+                    VBox vBoxInfoReport = new VBox();
+                    Label labelPath = new Label();
+                    Label labelTimeSearch = new Label();
                     TableView<Match> tableViewReport = new TableView<>();
                     tableViewReport.getSelectionModel().selectedItemProperty().addListener((observable2, oldValue2, newValue2) -> {
                         if (newValue2 == null) {
                             return;
                         }
                         System.out.println(newValue2.getNumRow());
-                        scrollTo(listViewDoc,newValue2.getNumRow());
-
+                        scrollTo(listViewDoc, newValue2.getNumRow());
                     });
-                                 //insert in tab
-                    VBox tmp = new VBox(listViewDoc, tableViewReport);
-                    tab.setContent(tmp);
-                    HistorySearch.fillTable(tableViewReport, newValue);
+                    vBoxInfoReport.getChildren().addAll(labelPath, labelTimeSearch);
 
+
+                    //insert in tab
+                    VBox tmp = new VBox(listViewDoc, vBoxInfoReport, tableViewReport);
+                    //   tmp.
+                    tab.setContent(tmp);
+                    HistorySearch.fillTable(tableViewReport, newValue, labelPath, labelTimeSearch);
                 }
                 tabPane.getSelectionModel().select(openTabs.get(newValue)); //open current tab
             }
