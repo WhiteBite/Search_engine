@@ -183,7 +183,15 @@ public class Controller {
                     openTabs.put(newValue, tab);
 
                     TableView<Match> tableViewReport = new TableView<>();
-                    //insert in tab
+                    tableViewReport.getSelectionModel().selectedItemProperty().addListener((observable2, oldValue2, newValue2) -> {
+                        if (newValue2 == null) {
+                            return;
+                        }
+                        System.out.println(newValue2.getNumRow());
+                        scrollTo(listViewDoc,newValue2.getNumRow());
+
+                    });
+                                 //insert in tab
                     VBox tmp = new VBox(listViewDoc, tableViewReport);
                     tab.setContent(tmp);
                     HistorySearch.fillTable(tableViewReport, newValue);
