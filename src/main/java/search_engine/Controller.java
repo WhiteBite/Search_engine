@@ -62,19 +62,18 @@ public class Controller {
     private void initBtnGoTo() {
         //Event Button Search
         btnGoTo.setOnAction(event -> {
-            int index = Integer.parseInt(textGoTo.getText()) - 1;
-            Platform.runLater(new Runnable() {
+            try {
+                int index = Integer.parseInt(textGoTo.getText()) - 1;
 
-                @Override
-                public void run() {
+                Platform.runLater(() -> {
                     if (listView != null) {
                         listView.scrollTo(index);
                         listView.getSelectionModel().select(index);
                     }
-                }
-            });
-//            listView.getFocusModel().focus(index);
-//            listView.scrollTo(index);
+                });
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input parameter \"go to\"");
+            }
         });
     }
 
