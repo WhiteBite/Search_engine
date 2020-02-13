@@ -42,10 +42,8 @@ class FileSystemTree {
     private static void createTree(TreeItem<File> rootItem) {
 
 
-        //TODO check it later
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(rootItem.getValue().getPath()))) {
             for (Path path : directoryStream) {
-
                 TreeItem<File> newItem = new TreeItem<>(new File(String.valueOf(path)));
                 newItem.setExpanded(true);
 
@@ -71,7 +69,6 @@ class FileSystemTree {
             if (!filteredChild.getChildren().isEmpty()) {
                 filteredRoot.getChildren().add(filteredChild);
             }
-            //TODO reformat
             if (isMatch(filteredChild.getValue(), filter)) {
 
                 var path = Paths.get(filteredChild.getValue().getPath());
@@ -82,7 +79,6 @@ class FileSystemTree {
     }
 
     private boolean isMatch(File value, String filter) {
-        //    return value.toString().toLowerCase().endsWith(filter.toLowerCase()); // TODO: optimize or change (check file extension, etc)
         boolean b = value.toString().toLowerCase().endsWith(filter.toLowerCase());
         if (b)
             System.out.println("Найден файл: " + value.getAbsolutePath() + " Filter: " + filter);

@@ -44,7 +44,7 @@ public class Controller {
     Button btnGoTo;
 
     //my listView
-    private ListView<String> listView;
+    private ListView<String> listViewDoc;
 
     private FileSystemTree treeView;
 
@@ -66,9 +66,9 @@ public class Controller {
                 int index = Integer.parseInt(textGoTo.getText()) - 1;
 
                 Platform.runLater(() -> {
-                    if (listView != null) {
-                        listView.scrollTo(index);
-                        listView.getSelectionModel().select(index);
+                    if (listViewDoc != null) {
+                        listViewDoc.scrollTo(index);
+                        listViewDoc.getSelectionModel().select(index);
                     }
                 });
             } catch (NumberFormatException e) {
@@ -162,30 +162,29 @@ public class Controller {
             if (newValue.getValue().isFile()) {
                 if (!openTabs.containsKey(newValue)) {
                     ObservableList<String> lines = FXCollections.observableArrayList();
-                    listView = new ListView<>(lines);
+                    listViewDoc = new ListView<>(lines);
                     // CompletableFuture.runAsync(() -> new LoaderDoc().loadDoc(newValue, listView));
                     new Thread(() -> {
                         StatusController.getStatusMsg().add(Config.getOPEN_DOC_MSH());
                         StatusController.ResetStatus(btnStatus);
-                        new LoaderDoc().loadDoc(newValue, listView);
+                        new LoaderDoc().loadDoc(newValue, listViewDoc);
                         StatusController.getStatusMsg().remove(Config.getOPEN_DOC_MSH());
                         StatusController.ResetStatus(btnStatus);
                     }).start();
                     Tab tab = new Tab(newValue.getValue().getName());
-                    tab.setOnClosed(event -> openTabs.values().remove(tab)
-                    );
+                    tab.setOnClosed(event -> openTabs.values().remove(tab));
                     tabPane.getTabs().add(tab);
                     openTabs.put(newValue, tab);
-                    TextArea textAreaReport = new TextArea();
+                    ListView<String> listViewReport = new ListView<>();
 
                     //insert in tab
-                    VBox tmp = new VBox(listView, textAreaReport);
+                    VBox tmp = new VBox(listViewDoc, listViewReport);
                     tab.setContent(tmp);
                     Path tmpF = Paths.get(newValue.getValue().getPath());
 
                     ReportFind reportFind = HistorySearch.history.get(tmpF);
                     if (!HistorySearch.history.isEmpty() && reportFind != null) {
-                        textAreaReport.setText(reportFind.getResult().toString());
+                        listViewReport.getItems().addAll(reportFind.getResultArr());
                     }
                 }
                 tabPane.getSelectionModel().select(openTabs.get(newValue)); //open current tab

@@ -24,7 +24,6 @@ public class ReportFind {
     }
 
 
-
     void addMatch(Match match) {
         isFound = true;
         matchArr.add(match);
@@ -47,6 +46,20 @@ public class ReportFind {
                 result.append(x.getNumRow()).append(": ").append(x.getRow());
             }
             result.append("Search time:").append(timeStop - timeStart).append("ms");
+        }
+        return result;
+    }
+
+    public String[] getResultArr() {
+        String[] result = new String[matchArr.size()+2];
+        result[0] = ("Path: ") + (path) + ("\n");
+        if (!matchArr.isEmpty()) {
+            int i =1;
+            for (var x : matchArr) {
+                result[i] = (x.getNumRow())+(": ")+(x.getRow());
+                i++;
+            }
+            result[i] =("Search time:")+(timeStop - timeStart)+("ms");
         }
         return result;
     }
