@@ -2,11 +2,11 @@ package search_engine.algorithm;
 
 import lombok.Getter;
 import lombok.Setter;
-
+//TODO Make it with lombok
 @Getter
-@Setter
-class Match {
-    private int numRow;
+public class Match {
+
+    private Integer numRow;
     private StringBuilder row;
 
     Match(int numRow, StringBuilder row) {

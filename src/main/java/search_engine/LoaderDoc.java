@@ -16,7 +16,7 @@ class LoaderDoc {
     LoaderDoc() {
     }
 
-    public void loadDoc(TreeItem<File> selectedItem, ListView<String> listView) {
+    void loadDoc(TreeItem<File> selectedItem, ListView<String> listView) {
 
         listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         listView.setCellFactory(TextFieldListCell.forListView());

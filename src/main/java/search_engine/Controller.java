@@ -1,15 +1,18 @@
 package search_engine;
 
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import search_engine.algorithm.HistorySearch;
 import search_engine.algorithm.ReportFind;
+import search_engine.algorithm.Match;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,18 +62,21 @@ public class Controller {
         }
     }
 
+    private void scrollTo(ListView<String> list, int index) {
+        Platform.runLater(() -> {
+            if (list != null && index >= 0) {
+                list.scrollTo(index);
+                list.getSelectionModel().select(index);
+            }
+        });
+    }
+
     private void initBtnGoTo() {
         //Event Button Search
         btnGoTo.setOnAction(event -> {
             try {
                 int index = Integer.parseInt(textGoTo.getText()) - 1;
-
-                Platform.runLater(() -> {
-                    if (listViewDoc != null) {
-                        listViewDoc.scrollTo(index);
-                        listViewDoc.getSelectionModel().select(index);
-                    }
-                });
+                scrollTo(listViewDoc, index);
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input parameter \"go to\"");
             }
@@ -175,17 +181,13 @@ public class Controller {
                     tab.setOnClosed(event -> openTabs.values().remove(tab));
                     tabPane.getTabs().add(tab);
                     openTabs.put(newValue, tab);
-                    ListView<String> listViewReport = new ListView<>();
 
+                    TableView<Match> tableViewReport = new TableView<>();
                     //insert in tab
-                    VBox tmp = new VBox(listViewDoc, listViewReport);
+                    VBox tmp = new VBox(listViewDoc, tableViewReport);
                     tab.setContent(tmp);
-                    Path tmpF = Paths.get(newValue.getValue().getPath());
+                    HistorySearch.fillTable(tableViewReport, newValue);
 
-                    ReportFind reportFind = HistorySearch.history.get(tmpF);
-                    if (!HistorySearch.history.isEmpty() && reportFind != null) {
-                        listViewReport.getItems().addAll(reportFind.getResultArr());
-                    }
                 }
                 tabPane.getSelectionModel().select(openTabs.get(newValue)); //open current tab
             }
